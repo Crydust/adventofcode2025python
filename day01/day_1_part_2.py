@@ -11,16 +11,12 @@ def main():
     # path = Path(__file__).with_name("example.txt")
     path = Path(__file__).with_name("input.txt")
     with open(path, encoding="utf-8") as f:
-        for raw_line in f:
-            line = raw_line.strip()
-            if not line:
-                continue
+        for line in f:
+            line = line.strip()
             direction = line[0]
             amount = int(line[1:])
             if direction == "L":
                 amount = -amount
-            # elif direction != "R":
-            #     raise ValueError(f"Invalid direction {direction!r} in line: {line!r}")
             range_size = maximum + 1
             current = (current + amount) % range_size
             if current == zero:
