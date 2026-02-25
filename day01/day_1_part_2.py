@@ -1,21 +1,33 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-zero = 0
-minimum = 0
-maximum = 99
-current = 50
-timesPointingAtZero = 0
-with open("./example.txt", encoding="utf-8") as f:
-    for line in f:
-        rotation = int(line[1:].strip())
-        if line[0] == "L":
-            rotation *= -1
-        current = (current + rotation)
-        if current > maximum:
-            current %= (maximum + 1)
-        while current < minimum:
-            current += maximum + 1
-        if current == zero:
-            timesPointingAtZero += 1
-        print(f"The dial is rotated {line.strip()} to point at {current}")
-print(f"The dial points at {zero} a total of {timesPointingAtZero} times.")
+from pathlib import Path
+
+
+def main():
+    zero = 0
+    minimum = 0
+    maximum = 99
+    current = 50
+    times_pointing_at_zero = 0
+    # path = Path(__file__).with_name("example.txt")
+    path = Path(__file__).with_name("input.txt")
+    with open(path, encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line:
+                continue
+            direction = line[0]
+            amount = int(line[1:])
+            if direction == "L":
+                amount = -amount
+            # elif direction != "R":
+            #     raise ValueError(f"Invalid direction {direction!r} in line: {line!r}")
+            range_size = maximum + 1
+            current = (current + amount) % range_size
+            if current == zero:
+                times_pointing_at_zero += 1
+            print(f"The dial is rotated {line} to point at {current}")
+    print(f"The dial points at {zero} a total of {times_pointing_at_zero} times.")
+
+
+if __name__ == "__main__":
+    main()
