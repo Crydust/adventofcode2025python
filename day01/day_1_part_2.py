@@ -14,11 +14,11 @@ def main():
         for line in f:
             line = line.strip()
             direction = line[0]
-            amount = int(line[1:])
-            if direction == "L":
-                amount = -amount
-            range_size = maximum + 1
-            current = (current + amount) % range_size
+            if direction not in ("L", "R"):
+                raise ValueError(f"Invalid direction: {direction!r}")
+            sign = -1 if direction == "L" else 1
+            amount = sign * int(line[1:])
+            current = (current + amount) % (maximum + 1)
             if current == zero:
                 times_pointing_at_zero += 1
             print(f"The dial is rotated {line} to point at {current}")
