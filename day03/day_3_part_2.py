@@ -13,18 +13,25 @@ def main() -> None:
 def maximum_joltage_from_bank(bank: str) -> int:
     batteries = [int(ch) for ch in bank]
 
-    while remove_preceding_large_jolt(batteries):
+    while trim_prefix_before_max(batteries):
         continue
 
     return int("".join(map(str, batteries[:12])))
 
 
-def remove_preceding_large_jolt(batteries: list[int]) -> bool:
+def trim_prefix_before_max(batteries: list[int]) -> bool:
+    """Remove the prefix before the first non-leading maximum candidate.
+
+    Scans each window large enough to leave 12 batteries overall. When the
+    largest value in a window is not already at the window start, deletes the
+    batteries before that value and returns True. Returns False if no removal
+    is possible.
+    """
     if len(batteries) <= 12:
         return False
 
     group_size = len(batteries) - 11
-    for start in range(12):
+    for start in range(len(batteries) - group_size + 1):
         end = start + group_size
         highest_index = max(range(start, end), key=batteries.__getitem__)
 
