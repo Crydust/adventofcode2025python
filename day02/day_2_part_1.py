@@ -20,7 +20,7 @@ def main():
     print(f"Adding up all the invalid IDs in this example produces {total_invalid_sum}.")
 
 
-def read_product_id_ranges(path: Path) -> list[ProductIdRange]:
+def read_product_id_ranges(path: Path) -> list["ProductIdRange"]:
     content = path.read_text(encoding="utf-8").strip()
     product_id_ranges = []
     for pair in content.split(","):
