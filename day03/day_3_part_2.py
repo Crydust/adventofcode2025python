@@ -12,27 +12,27 @@ def main() -> None:
 
 def maximum_joltage_from_bank(bank: str) -> int:
     batteries = [int(ch) for ch in bank]
-    for i in range(0, 100):
-        if len(batteries) == 12:
-            break
-        remove_preceding_large_jolt(batteries, len(batteries) - 11)
-        batteries = [n for n in batteries if n >= 0]
-    return int("".join(str(n) for n in batteries[0:12]))
+
+    while remove_preceding_large_jolt(batteries):
+        continue
+
+    return int("".join(map(str, batteries[:12])))
 
 
-def remove_preceding_large_jolt(batteries: list[int], group_size: int) -> None:
-    for i in range(len(batteries) - group_size + 1):
-        highest_value = -1
-        highest_index = -1
-        for j in range(i, i + group_size):
-            value = batteries[j]
-            if value > highest_value:
-                highest_value = value
-                highest_index = j
-        if highest_index != i and highest_index != -1:
-            for j in range(i, highest_index):
-                batteries[j] = -1
-            break
+def remove_preceding_large_jolt(batteries: list[int]) -> bool:
+    if len(batteries) <= 12:
+        return False
+
+    group_size = len(batteries) - 11
+    for start in range(12):
+        end = start + group_size
+        highest_index = max(range(start, end), key=batteries.__getitem__)
+
+        if highest_index != start:
+            del batteries[start:highest_index]
+            return True
+
+    return False
 
 
 if __name__ == "__main__":
