@@ -7,8 +7,8 @@ NINE_TO_ONE = "".join(str(i) for i in range(9, 0, -1))
 def main() -> None:
     # path = Path(__file__).with_name("example.txt")
     path = Path(__file__).with_name("input.txt")
-    with path.open(encoding="utf-8") as f:
-        total = sum(maximum_joltage_from_bank(line.strip()) for line in f)
+    with path.open(encoding="utf-8") as file:
+        total = sum(maximum_joltage_from_bank(line.strip()) for line in file)
     print(f"The total output joltage is {total}.")
 
 
