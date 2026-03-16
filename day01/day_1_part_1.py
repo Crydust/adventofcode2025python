@@ -4,7 +4,6 @@ from pathlib import Path
 
 def main():
     zero = 0
-    minimum = 0
     maximum = 99
     current = 50
     times_pointing_at_zero = 0
