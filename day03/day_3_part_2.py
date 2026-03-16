@@ -30,9 +30,8 @@ def trim_prefix_before_max(batteries: list[int]) -> bool:
     if len(batteries) <= 12:
         return False
 
-    group_size = len(batteries) - 11
-    for start in range(len(batteries) - group_size + 1):
-        end = start + group_size
+    for start in range(12):
+        end = start + len(batteries) - 12 + 1
         highest_index = max(range(start, end), key=batteries.__getitem__)
 
         if highest_index != start:
