@@ -12,7 +12,7 @@ def main() -> None:
     path = Path(__file__).with_name("input.txt")
     with path.open(encoding="utf-8") as file:
         shape_index = 0
-        shape_areas = [0, 0, 0, 0, 0, 0]
+        shape_areas = [0] * 6
         fitting_regions = 0
         for raw_line in file:
             line = raw_line.strip()
