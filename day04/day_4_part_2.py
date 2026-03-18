@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,7 +14,7 @@ def main() -> None:
     total_removed = 0
     removed = -1
 
-    while removed != 0:
+    while removed:
         rows, next_rows = next_rows, []
         removed = 0
         previous_row, current_row, next_row = "", "", ""
@@ -22,19 +23,19 @@ def main() -> None:
             if not current_row:
                 continue
             altered_row = remove_in_row(previous_row, current_row, next_row)
-            next_rows.append(altered_row.row)
+            next_rows.append(altered_row.updated_row)
             removed += altered_row.removed
         previous_row, current_row, next_row = current_row, next_row, ""
         altered_row = remove_in_row(previous_row, current_row, next_row)
-        next_rows.append(altered_row.row)
+        next_rows.append(altered_row.updated_row)
         removed += altered_row.removed
         total_removed += removed
 
     print(f"{total_removed} rolls of paper removed by a forklift.")
 
 
-def remove_in_row(previous_row: str, current_row: str, next_row: str) -> "AlteredRow":
-    copy = current_row
+def remove_in_row(previous_row: str, current_row: str, next_row: str) -> AlteredRow:
+    updated_row = list(current_row)
     removed = 0
     for i, ch in enumerate(current_row):
         if ch != "@":
@@ -46,13 +47,13 @@ def remove_in_row(previous_row: str, current_row: str, next_row: str) -> "Altere
                     neighbor_count += 1
         if neighbor_count <= 4:
             removed += 1
-            copy = copy[:i] + "x" + copy[i + 1 :]
-    return AlteredRow(copy, removed)
+            updated_row[i] = "x"
+    return AlteredRow("".join(updated_row), removed)
 
 
 @dataclass(frozen=True)
 class AlteredRow:
-    row: str
+    updated_row: str
     removed: int
 
 
