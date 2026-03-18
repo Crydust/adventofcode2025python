@@ -1,45 +1,49 @@
 #!/usr/bin/env python3
 import itertools
 from pathlib import Path
+from typing import Iterator
 
 
 def main() -> None:
-    # path = Path(__file__).with_name("example.txt")
-    path = Path(__file__).with_name("input.txt")
+    path = Path(__file__).with_name("example.txt")
+    # path = Path(__file__).with_name("input.txt")
     rows = path.read_text(encoding="utf-8").splitlines()
 
-    accessible = 0
-
-    previous_row = ""
-    current_row = ""
-
-    # sentinel flushes final pending current_row
-    for next_row in itertools.chain(rows, ("",)):
-        accessible += accessible_in_row(previous_row, current_row, next_row)
-        previous_row, current_row = current_row, next_row
+    accessible = sum(
+        accessible_in_row(prev, curr, next_)
+        for prev, curr, next_ in sliding_windows(rows)
+    )
 
     print(f"{accessible} rolls of paper can be accessed by a forklift.")
 
 
-def accessible_in_row(previous_row: str, current_row: str, next_row: str) -> int:
-    result = 0
+def sliding_windows(rows:list[str]) -> Iterator[tuple[str, str, str]]:
+    """Yield (previous_row, current_row, next_row) tuples."""
+    previous = ""
+    current = ""
+    for next_ in itertools.chain(rows, ("",)):
+        if current:
+            yield previous, current, next_
+        previous, current = current, next_
 
-    for i, ch in enumerate(current_row):
-        if ch != "@":
-            continue
 
-        neighbor_count = sum(
-            1
-            for row in (previous_row, current_row, next_row)
-            for column in range(i - 1, i + 2)
-            if 0 <= column < len(row)
-            if row[column] == "@"
-        )
+def accessible_in_row(previous: str, current: str, next_: str) -> int:
+    return sum(
+        1
+        for col, ch in enumerate(current)
+        if ch == "@"
+        if count_neighbors(previous, current, next_, col) <= 4
+    )
 
-        if neighbor_count <= 4:
-            result += 1
 
-    return result
+def count_neighbors(previous: str, current: str, next_: str, col: int) -> int:
+    return sum(
+        1
+        for row in (previous, current, next_)
+        for column in range(col - 1, col + 2)
+        if 0 <= column < len(row)
+        if row[column] == "@"
+    )
 
 
 if __name__ == "__main__":
