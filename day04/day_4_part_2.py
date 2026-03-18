@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import itertools
 from pathlib import Path
-from typing import Iterator
+from utils import is_accessible, sliding_windows
 
 
 def main() -> None:
@@ -32,36 +31,16 @@ def process_pass(rows: list[str]) -> tuple[list[str], int]:
     return updated_rows, removed_total
 
 
-def sliding_windows(rows: list[str]) -> Iterator[tuple[str, str, str]]:
-    """Yield (previous_row, current_row, next_row) tuples."""
-    previous = ""
-    current = ""
-    for next_ in itertools.chain(rows, ("",)):
-        if current:
-            yield previous, current, next_
-        previous, current = current, next_
-
-
 def remove_in_row(previous: str, current: str, next_: str) -> tuple[str, int]:
     updated_row = list(current)
     removed_in_row = 0
 
-    for col, ch in enumerate(current):
-        if ch == "@" and count_neighbors(previous, current, next_, col) <= 4:
+    for col in range(len(current)):
+        if is_accessible(previous, current, next_, col):
             updated_row[col] = "x"
             removed_in_row += 1
 
     return "".join(updated_row), removed_in_row
-
-
-def count_neighbors(previous: str, current: str, next_: str, col: int) -> int:
-    return sum(
-        1
-        for row in (previous, current, next_)
-        for column in range(col - 1, col + 2)
-        if 0 <= column < len(row)
-        if row[column] == "@"
-    )
 
 
 if __name__ == "__main__":
