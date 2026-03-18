@@ -9,7 +9,8 @@ def main() -> None:
     rows = path.read_text(encoding="utf-8").splitlines()
 
     total_removed = 0
-    removed = 1  # prime the loop
+    # prime the loop
+    removed = 1
 
     while removed:
         rows, removed = process_pass(rows)
@@ -25,11 +26,14 @@ def process_pass(rows: list[str]) -> tuple[list[str], int]:
     previous_row = ""
     current_row = ""
 
-    for next_row in itertools.chain(rows, [""]) :  # sentinel flushes final pending current_row
+    # sentinel flushes final pending current_row
+    for next_row in itertools.chain(rows, ("",)):
         if current_row:
-            updated_row, removed = remove_in_row(previous_row, current_row, next_row)
+            updated_row, removed_in_row = remove_in_row(
+                previous_row, current_row, next_row
+            )
             updated_rows.append(updated_row)
-            removed_total += removed
+            removed_total += removed_in_row
 
         previous_row, current_row = current_row, next_row
 
@@ -40,7 +44,7 @@ def remove_in_row(
     previous_row: str, current_row: str, next_row: str
 ) -> tuple[str, int]:
     updated_row = list(current_row)
-    removed = 0
+    removed_in_row = 0
 
     for i, ch in enumerate(current_row):
         if ch != "@":
@@ -56,9 +60,9 @@ def remove_in_row(
 
         if neighbor_count <= 4:
             updated_row[i] = "x"
-            removed += 1
+            removed_in_row += 1
 
-    return "".join(updated_row), removed
+    return "".join(updated_row), removed_in_row
 
 
 if __name__ == "__main__":
