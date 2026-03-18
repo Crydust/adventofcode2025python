@@ -1,60 +1,61 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-from dataclasses import dataclass
 from pathlib import Path
 
 
 def main() -> None:
     # path = Path(__file__).with_name("example.txt")
     path = Path(__file__).with_name("input.txt")
-    current_text = path.read_text(encoding="utf-8")
+    rows = path.read_text(encoding="utf-8").splitlines()
 
-    rows = []
-    next_rows = current_text.splitlines()
     total_removed = 0
-    removed = -1
+    removed = 1  # prime the loop
 
     while removed:
-        rows, next_rows = next_rows, []
-        removed = 0
-        previous_row, current_row, next_row = "", "", ""
-        for row in rows:
-            previous_row, current_row, next_row = current_row, next_row, row
-            if not current_row:
-                continue
-            altered_row = remove_in_row(previous_row, current_row, next_row)
-            next_rows.append(altered_row.updated_row)
-            removed += altered_row.removed
-        previous_row, current_row, next_row = current_row, next_row, ""
-        altered_row = remove_in_row(previous_row, current_row, next_row)
-        next_rows.append(altered_row.updated_row)
-        removed += altered_row.removed
+        rows, removed = process_pass(rows)
         total_removed += removed
 
     print(f"{total_removed} rolls of paper removed by a forklift.")
 
 
-def remove_in_row(previous_row: str, current_row: str, next_row: str) -> AlteredRow:
-    updated_row = list(current_row)
+def process_pass(rows: list[str]) -> tuple[list[str], int]:
+    updated_rows: list[str] = []
+    removed_total = 0
+
+    previous = ""
+    current = ""
+
+    for next in [*rows, ""]:  # sentinel flushes final pending current_row
+        if current:
+            updated_row, removed = remove_in_row(previous, current, next)
+            updated_rows.append(updated_row)
+            removed_total += removed
+
+        previous, current = current, next
+
+    return updated_rows, removed_total
+
+
+def remove_in_row(previous: str, current: str, next: str) -> tuple[str, int]:
+    updated_row = list(current)
     removed = 0
-    for i, ch in enumerate(current_row):
+
+    for i, ch in enumerate(current):
         if ch != "@":
             continue
-        neighbor_count = 0
-        for row in (previous_row, current_row, next_row):
-            for column in range(i - 1, i + 2):
-                if 0 <= column < len(row) and row[column] == "@":
-                    neighbor_count += 1
+
+        neighbor_count = sum(
+            1
+            for row in (previous, current, next)
+            for column in range(i - 1, i + 2)
+            if 0 <= column < len(row)
+            if row[column] == "@"
+        )
+
         if neighbor_count <= 4:
-            removed += 1
             updated_row[i] = "x"
-    return AlteredRow("".join(updated_row), removed)
+            removed += 1
 
-
-@dataclass(frozen=True)
-class AlteredRow:
-    updated_row: str
-    removed: int
+    return "".join(updated_row), removed
 
 
 if __name__ == "__main__":
