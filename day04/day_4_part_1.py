@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from utils import is_accessible, sliding_windows
+from .utils import is_accessible, sliding_windows
 
 
 def main() -> None:
