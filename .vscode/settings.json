@@ -3,6 +3,7 @@
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
+    "python.envFile": "${workspaceFolder}/.env",
     "python.testing.pytestArgs": [
         "tests"
     ],
