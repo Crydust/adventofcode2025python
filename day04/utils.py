@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import itertools
 from typing import Iterator
 
 
@@ -7,10 +6,11 @@ def sliding_windows(rows: list[str]) -> Iterator[tuple[str, str, str]]:
     """Yield (previous_row, current_row, next_row) tuples."""
     previous = ""
     current = ""
-    for next_ in itertools.chain(rows, ("",)):
+    for next_ in rows:
         if current:
             yield previous, current, next_
         previous, current = current, next_
+    yield previous, current, ""
 
 
 def is_accessible(previous: str, current: str, next_: str, col: int) -> bool:
