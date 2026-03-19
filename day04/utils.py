@@ -10,7 +10,8 @@ def sliding_windows(rows: list[str]) -> Iterator[tuple[str, str, str]]:
         if current:
             yield previous, current, next_
         previous, current = current, next_
-    yield previous, current, ""
+    if current:
+        yield previous, current, ""
 
 
 def is_accessible(previous: str, current: str, next_: str, col: int) -> bool:
