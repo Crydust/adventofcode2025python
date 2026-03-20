@@ -9,10 +9,8 @@ This project is a Python recreation based on the [Java solutions](https://github
 ```shell
 python -m venv .venv
 .venv/Scripts/activate.bat
-python -m pip install -e .
-python -m pip install -e ."[dev]"
+python -m pip install --group dev -e .
 python -m ruff check
 python -m pytest
-python -m pip install build
 python -m build
 ```
