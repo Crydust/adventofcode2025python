@@ -1,6 +1,6 @@
 import pytest
 
-from day04.utils import sliding_windows
+from app.day04.utils import sliding_windows
 
 
 @pytest.mark.parametrize(

@@ -1,6 +1,6 @@
 import pytest
 
-from day04.utils import is_accessible
+from app.day04.utils import is_accessible
 
 
 @pytest.mark.parametrize(
