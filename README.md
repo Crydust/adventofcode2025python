@@ -9,9 +9,9 @@ This project is a Python recreation based on the [Java solutions](https://github
 ```shell
 python -m venv .venv
 .venv/Scripts/activate.bat
-rem or .venv/Scripts/activate
-rem or .venv/Scripts/activate.ps1
 python -m pip install -e .
+python -m pip install -e ."[dev]"
+python -m ruff check
 python -m pytest
 python -m pip install build
 python -m build
